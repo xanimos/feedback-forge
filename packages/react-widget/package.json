@@ -1,0 +1,41 @@
+{
+  "name": "@feedback-forge/react-widget",
+  "version": "0.1.0",
+  "description": "A customizable React component for collecting user feedback.",
+  "author": "Feedback Forge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git",
+    "directory": "packages/react-widget"
+  },
+  "homepage": "https://github.com/xanimos/feedback-forge/tree/main/packages/react-widget",
+  "bugs": {
+    "url": "https://github.com/xanimos/feedback-forge/issues"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "feedback-forge",
+    "react",
+    "widget",
+    "feedback",
+    "component"
+  ],
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "5.7.3"
+  }
+}

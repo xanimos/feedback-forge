@@ -1,0 +1,101 @@
+{
+  "name": "@feedback-forge/payload-plugin",
+  "version": "0.1.0",
+  "description": "The primary plugin for integrating the Feedback Forge toolkit into a Payload CMS application.",
+  "author": "Feedback Forge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git",
+    "directory": "packages/payload-plugin"
+  },
+  "homepage": "https://github.com/xanimos/feedback-forge/tree/main/packages/payload-plugin",
+  "bugs": {
+    "url": "https://github.com/xanimos/feedback-forge/issues"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "keywords": [
+    "feedback-forge",
+    "payload",
+    "payload-cms",
+    "plugin",
+    "feedback",
+    "react",
+    "nextjs"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/exports/client.js",
+      "types": "./dist/exports/client.d.ts"
+    },
+    "./rsc": {
+      "import": "./dist/exports/rsc.js",
+      "types": "./dist/exports/rsc.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "npm run copyfiles && npm run build:types && npm run build:swc",
+    "build:swc": "swc ./src -d ./dist --config-file .swcrc --strip-leading-paths",
+    "build:types": "tsc --outDir dist --rootDir ./src",
+    "clean": "rimraf dist *.tsbuildinfo",
+    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png,json}\" dist/",
+    "dev": "next dev dev",
+    "dev:generate-importmap": "pnpm dev:payload generate:importmap",
+    "dev:generate-types": "pnpm dev:payload generate:types",
+    "dev:payload": "cross-env PAYLOAD_CONFIG_PATH=./dev/payload.config.ts payload",
+    "generate:importmap": "pnpm dev:generate-importmap",
+    "generate:types": "pnpm dev:generate-types",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run test:int && npm run test:e2e",
+    "test:e2e": "playwright test",
+    "test:int": "vitest"
+  },
+  "dependencies": {
+    "@feedback-forge/core": "workspace:*",
+    "@feedback-forge/integration-jules": "workspace:*",
+    "@feedback-forge/react-widget": "workspace:*"
+  },
+  "devDependencies": {
+    "@payloadcms/db-mongodb": "^3.60.0",
+    "@payloadcms/db-postgres": "^3.60.0",
+    "@payloadcms/db-sqlite": "^3.60.0",
+    "@payloadcms/eslint-config": "3.28.0",
+    "@payloadcms/next": "^3.60.0",
+    "@payloadcms/richtext-lexical": "^3.60.0",
+    "@payloadcms/ui": "^3.60.0",
+    "@playwright/test": "^1.52.0",
+    "@swc-node/register": "1.10.9",
+    "@swc/cli": "0.6.0",
+    "@types/node": "^22.5.4",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "copyfiles": "2.4.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.23.0",
+    "eslint-config-next": "15.4.4",
+    "graphql": "^16.8.1",
+    "mongodb-memory-server": "10.1.4",
+    "next": "15.4.7",
+    "open": "^10.1.0",
+    "payload": "^3.60.0",
+    "prettier": "^3.4.2",
+    "qs-esm": "7.0.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "rimraf": "3.0.2",
+    "sharp": "0.34.2",
+    "typescript": "5.7.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.1.2"
+  },
+  "peerDependencies": {
+    "payload": "^3.37.0"
+  }
+}

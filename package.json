@@ -1,0 +1,30 @@
+{
+  "name": "feedback-forge",
+  "private": true,
+  "description": "Monorepo for the Feedback Forge toolkit, a system for collecting, processing, and acting on user feedback.",
+  "author": "Feedback Forge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git"
+  },
+  "homepage": "https://github.com/xanimos/feedback-forge",
+  "bugs": {
+    "url": "https://github.com/xanimos/feedback-forge/issues"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "clean": "pnpm -r clean",
+    "dev": "pnpm --filter @feedback-forge/payload-plugin dev",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.7",
+    "@types/node": "^22.5.4",
+    "copyfiles": "^2.4.1",
+    "eslint": "^9.23.0",
+    "rimraf": "6.1.0",
+    "typescript": "5.7.3"
+  }
+}

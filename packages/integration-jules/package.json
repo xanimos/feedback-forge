@@ -1,0 +1,48 @@
+{
+  "name": "@feedback-forge/integration-jules",
+  "version": "0.1.0",
+  "description": "Jules integration for Feedback Forge. Initiates AI coding sessions from feedback.",
+  "author": "Feedback Forge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git",
+    "directory": "packages/integration-jules"
+  },
+  "homepage": "https://github.com/xanimos/feedback-forge/tree/main/packages/integration-jules",
+  "bugs": {
+    "url": "https://github.com/xanimos/feedback-forge/issues"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./client": "./dist/exports/client.js"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "feedback-forge",
+    "jules",
+    "integration",
+    "ai-coding"
+  ],
+  "type": "module",
+  "dependencies": {
+    "@feedback-forge/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@payloadcms/ui": "^3.60.0",
+    "payload": "^3.60.0",
+    "react": "^19.1.0",
+    "typescript": "5.7.3",
+    "@types/react": "^19.1.8"
+  },
+  "peerDependencies": {
+    "@payloadcms/ui": "^3.60.0",
+    "payload": "^3.60.0",
+    "react": "^19.1.0"
+  }
+}

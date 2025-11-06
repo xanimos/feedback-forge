@@ -1,0 +1,11 @@
+# Ignore build output
+dist
+.tsbuildinfo
+
+# Ignore dependencies
+node_modules
+
+# Ignore dev environment
+dev/.next
+dev/sqlite.db
+dev/.env

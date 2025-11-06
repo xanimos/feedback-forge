@@ -1,0 +1,40 @@
+{
+  "name": "@feedback-forge/core",
+  "version": "0.1.0",
+  "description": "Core types, utilities, and AI feedback processing logic for the Feedback Forge ecosystem.",
+  "author": "Feedback Forge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/xanimos/feedback-forge/tree/main/packages/core",
+  "bugs": {
+    "url": "https://github.com/xanimos/feedback-forge/issues"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "feedback-forge",
+    "core",
+    "ai",
+    "genkit",
+    "feedback-processing"
+  ],
+  "dependencies": {
+    "@genkit-ai/google-genai": "^1.21.0",
+    "genkit": "^1.21.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/handlebars": "^4.1.0",
+    "typescript": "5.7.3"
+  },
+  "type": "module"
+}
