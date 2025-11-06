@@ -1,4 +1,4 @@
-import type { Endpoint } from 'payload'
+import type { Endpoint } from 'payload';
 
 export const getFeedbackSettingsEndpoint: Endpoint = {
   path: '/feedback-settings',
@@ -7,11 +7,11 @@ export const getFeedbackSettingsEndpoint: Endpoint = {
     try {
       const feedbackSettings = await req.payload.findGlobal({
         slug: 'feedback-settings',
-      })
-      return Response.json(feedbackSettings, {status: 200});
+      });
+      return Response.json(feedbackSettings, { status: 200 });
     } catch (error: any) {
-      req.payload.logger.error(`Error fetching feedback settings: ${error}`)
-      return Response.json({ error: 'Failed to fetch feedback settings' }, {status: 500})
+      req.payload.logger.error(`Error fetching feedback settings: ${error}`);
+      return Response.json({ error: 'Failed to fetch feedback settings' }, { status: 500 });
     }
   },
-}
+};

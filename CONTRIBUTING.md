@@ -29,9 +29,10 @@ Make your changes, and please be sure to follow the existing code style. Add tes
 We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for our commit messages. This allows for automated changelog generation.
 
 Examples:
-*   `feat: Add support for GitLab integration`
-*   `fix: Correctly handle API errors in the feedback widget`
-*   `docs: Update payload-plugin README with new configuration options`
+
+- `feat: Add support for GitLab integration`
+- `fix: Correctly handle API errors in the feedback widget`
+- `docs: Update payload-plugin README with new configuration options`
 
 ## Submitting a Pull Request
 

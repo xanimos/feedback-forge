@@ -1,19 +1,19 @@
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import { payloadFeedbackForge } from '@feedback-forge/payload-plugin'
-import path from 'path'
-import { buildConfig } from 'payload'
-import sharp from 'sharp'
-import { fileURLToPath } from 'url'
+import { sqliteAdapter } from '@payloadcms/db-sqlite';
+import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import { payloadFeedbackForge } from '@feedback-forge/payload-plugin';
+import path from 'path';
+import { buildConfig } from 'payload';
+import sharp from 'sharp';
+import { fileURLToPath } from 'url';
 
-import { testEmailAdapter } from './helpers/testEmailAdapter.js'
-import { seed } from './seed.js'
+import { testEmailAdapter } from './helpers/testEmailAdapter.js';
+import { seed } from './seed.js';
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 if (!process.env.ROOT_DIR) {
-  process.env.ROOT_DIR = dirname
+  process.env.ROOT_DIR = dirname;
 }
 
 const buildConfigWithMemoryDB = async () => {
@@ -62,24 +62,26 @@ const buildConfigWithMemoryDB = async () => {
     jobs: {
       access: {
         run: ({ req }) => {
-          if (req.user) {return true}
+          if (req.user) {
+            return true;
+          }
 
-          const authHeader = req.headers.get('authorization')
-          return authHeader === `Bearer ${process.env.CRON_SECRET}`
+          const authHeader = req.headers.get('authorization');
+          return authHeader === `Bearer ${process.env.CRON_SECRET}`;
         },
       },
       jobsCollectionOverrides: ({ defaultJobsCollection }) => {
         if (!defaultJobsCollection.admin) {
-          defaultJobsCollection.admin = {}
+          defaultJobsCollection.admin = {};
         }
 
-        defaultJobsCollection.admin.hidden = false
-        return defaultJobsCollection
+        defaultJobsCollection.admin.hidden = false;
+        return defaultJobsCollection;
       },
       tasks: [],
     },
     onInit: async (payload) => {
-      await seed(payload)
+      await seed(payload);
     },
     plugins: [
       payloadFeedbackForge({
@@ -98,7 +100,7 @@ const buildConfigWithMemoryDB = async () => {
     typescript: {
       outputFile: path.resolve(dirname, 'payload-types.ts'),
     },
-  })
-}
+  });
+};
 
-export default buildConfigWithMemoryDB()
+export default buildConfigWithMemoryDB();

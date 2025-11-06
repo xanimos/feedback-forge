@@ -16,20 +16,12 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@payload-config": [
-        "./payload.config.ts"
-      ],
-      "@xanimos/payload-feedback-forge": [
-        "../src/index.ts"
-      ],
-      "@xanimos/payload-feedback-forge/client": [
-        "../src/exports/client.ts"
-      ],
-      "@xanimos/payload-feedback-forge/rsc": [
-        "../src/exports/rsc.ts"
-      ]
+      "@payload-config": ["./payload.config.ts"],
+      "@xanimos/payload-feedback-forge": ["../src/index.ts"],
+      "@xanimos/payload-feedback-forge/client": ["../src/exports/client.ts"],
+      "@xanimos/payload-feedback-forge/rsc": ["../src/exports/rsc.ts"]
     },
     "noEmit": true,
-    "emitDeclarationOnly": false,
+    "emitDeclarationOnly": false
   }
 }

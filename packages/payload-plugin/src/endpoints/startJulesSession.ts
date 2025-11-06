@@ -1,35 +1,35 @@
-import type { PayloadHandler } from 'payload'
+import type { PayloadHandler } from 'payload';
 
 import { addDataAndFileToRequest } from 'payload';
 
 export type StartSessionArgs = {
-  developerPrompt: string
-  feedbackId: number
-  title: string
-}
+  developerPrompt: string;
+  feedbackId: number;
+  title: string;
+};
 
-export const startJulesSessionHandler: PayloadHandler =
-  async (req) => {
+export const startJulesSessionHandler: PayloadHandler = async (req) => {
   await addDataAndFileToRequest(req);
-  const { data, payload, user } = req
+  const { data, payload, user } = req;
 
   if (!user || user.role !== 'admin') {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { developerPrompt, feedbackId, title } = data as StartSessionArgs;
 
   if (!feedbackId || !developerPrompt || !title) {
-    return Response.json({ error: 'Missing required fields' }, { status: 400 })
+    return Response.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
   try {
     const feedbackSettings = await payload.findGlobal({
       slug: 'feedback-settings',
-    })
+    });
 
     const julesApiKey = feedbackSettings.jules?.julesApiKey;
-    const julesApiUrl = feedbackSettings.jules?.julesApiUrl || 'https://jules.googleapis.com/v1alpha/sessions';
+    const julesApiUrl =
+      feedbackSettings.jules?.julesApiUrl || 'https://jules.googleapis.com/v1alpha/sessions';
 
     if (!julesApiKey) {
       throw new Error('Jules API Key not set in Feedback Settings.');
@@ -77,14 +77,17 @@ export const startJulesSessionHandler: PayloadHandler =
           status: feedbackSettings.jules?.julesManagedStatuses?.received || 'received',
         },
       });
-      return Response.json({ error: 'Failed to start Jules session.' }, { status: response.status });
+      return Response.json(
+        { error: 'Failed to start Jules session.' },
+        { status: response.status },
+      );
     }
   } catch (error) {
     payload.logger.error(`Error starting Jules session: ${error}`);
     try {
       const feedbackSettings = await payload.findGlobal({
         slug: 'feedback-settings',
-      })
+      });
       await payload.update({
         id: feedbackId,
         collection: 'feedback',
@@ -97,4 +100,4 @@ export const startJulesSessionHandler: PayloadHandler =
     }
     return Response.json({ error: 'An internal error occurred.' }, { status: 500 });
   }
-}
+};

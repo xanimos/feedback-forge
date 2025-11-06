@@ -1,43 +1,43 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 interface FeedbackWidgetStyles {
-  button?: React.CSSProperties
-  formContainer?: React.CSSProperties
-  input?: React.CSSProperties
-  textarea?: React.CSSProperties
-  widgetContainer?: React.CSSProperties
-  closeButton?: React.CSSProperties
+  button?: React.CSSProperties;
+  formContainer?: React.CSSProperties;
+  input?: React.CSSProperties;
+  textarea?: React.CSSProperties;
+  widgetContainer?: React.CSSProperties;
+  closeButton?: React.CSSProperties;
 }
 
 interface FeedbackWidgetProps {
   /**
    * The URL of the feedback API endpoint.
    */
-  feedbackApiUrl: string
+  feedbackApiUrl: string;
   /**
    * Optional user data to associate with the feedback.
    */
   user?: {
-    id: number | string
-  }
+    id: number | string;
+  };
   /**
    * Optional default value for the title.
    */
-  defaultTitle?: string
+  defaultTitle?: string;
   /**
    * Optional default value for the feedback.
    */
-  defaultFeedback?: string
+  defaultFeedback?: string;
   /**
    * Optional default value for the breadcrumbs.
    */
-  defaultBreadcrumbs?: string
+  defaultBreadcrumbs?: string;
   /**
    * Optional custom styles for the widget components.
    */
-  customStyles?: FeedbackWidgetStyles
+  customStyles?: FeedbackWidgetStyles;
 }
 
 export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
@@ -48,19 +48,19 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
   defaultBreadcrumbs = '',
   customStyles,
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [title, setTitle] = useState(defaultTitle)
-  const [feedback, setFeedback] = useState(defaultFeedback)
-  const [breadcrumbs, setBreadcrumbs] = useState(defaultBreadcrumbs)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<null | string>(null)
-  const [success, setSuccess] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [title, setTitle] = useState(defaultTitle);
+  const [feedback, setFeedback] = useState(defaultFeedback);
+  const [breadcrumbs, setBreadcrumbs] = useState(defaultBreadcrumbs);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<null | string>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setError(null)
-    setSuccess(false)
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(false);
 
     try {
       const response = await fetch(feedbackApiUrl, {
@@ -74,28 +74,28 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
           'Content-Type': 'application/json',
         },
         method: 'POST',
-      })
+      });
 
-      const res = await response.json()
+      const res = await response.json();
 
       if (!response.ok) {
-        throw new Error(res.errors?.[0]?.message || 'Failed to submit feedback.')
+        throw new Error(res.errors?.[0]?.message || 'Failed to submit feedback.');
       }
 
-      setSuccess(true)
-      setTitle('')
-      setFeedback('')
-      setBreadcrumbs('')
+      setSuccess(true);
+      setTitle('');
+      setFeedback('');
+      setBreadcrumbs('');
       setTimeout(() => {
-        setIsOpen(false)
-        setSuccess(false)
-      }, 2000)
+        setIsOpen(false);
+        setSuccess(false);
+      }, 2000);
     } catch (err: any) {
-      setError(err.message)
+      setError(err.message);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Basic styling for the widget. Users can override this with their own styles.
   const defaultStyles = {
@@ -138,7 +138,7 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
       backgroundColor: '#6c757d',
       marginLeft: '10px',
     },
-  } as const
+  } as const;
 
   const styles = {
     button: { ...defaultStyles.button, ...customStyles?.button },
@@ -147,7 +147,7 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
     textarea: { ...defaultStyles.textarea, ...customStyles?.textarea },
     widgetContainer: { ...defaultStyles.widgetContainer, ...customStyles?.widgetContainer },
     closeButton: { ...defaultStyles.closeButton, ...customStyles?.closeButton },
-  }
+  };
 
   return (
     <div style={styles.widgetContainer}>
@@ -157,33 +157,33 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
             <h3>Submit Feedback</h3>
             <input
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title"
+              placeholder='Title'
               required
               style={styles.input}
-              type="text"
+              type='text'
               value={title}
             />
             <textarea
               onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Describe your issue or idea..."
+              placeholder='Describe your issue or idea...'
               required
               style={styles.textarea}
               value={feedback}
             />
             <input
               onChange={(e) => setBreadcrumbs(e.target.value)}
-              placeholder="Breadcrumbs (optional)"
+              placeholder='Breadcrumbs (optional)'
               style={styles.input}
-              type="text"
+              type='text'
               value={breadcrumbs}
             />
-            <button disabled={isSubmitting} style={styles.button} type="submit">
+            <button disabled={isSubmitting} style={styles.button} type='submit'>
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
             <button
               onClick={() => setIsOpen(false)}
               style={{ ...styles.button, ...styles.closeButton }}
-              type="button"
+              type='button'
             >
               Close
             </button>
@@ -197,5 +197,5 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
         </button>
       )}
     </div>
-  )
-}
+  );
+};

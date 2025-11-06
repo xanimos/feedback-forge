@@ -8,8 +8,8 @@ This package is a dependency of the [`@feedback-forge/payload-plugin`](../payloa
 
 ## Features
 
-*   **`JulesSessionManagement`**: A React component that renders a button in the Payload admin panel to start a new Jules session.
-*   **`startJulesSessionHandler`**: A Payload endpoint handler that communicates with the Jules API to initiate a new coding session.
+- **`JulesSessionManagement`**: A React component that renders a button in the Payload admin panel to start a new Jules session.
+- **`startJulesSessionHandler`**: A Payload endpoint handler that communicates with the Jules API to initiate a new coding session.
 
 ## Usage
 

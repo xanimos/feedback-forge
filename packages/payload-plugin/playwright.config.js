@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Read environment variables from file.
@@ -43,4 +43,4 @@ export default defineConfig({
     reuseExistingServer: true,
     url: 'http://localhost:3000/admin',
   },
-})
+});

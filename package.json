@@ -11,19 +11,27 @@
   "bugs": {
     "url": "https://github.com/xanimos/feedback-forge/issues"
   },
+  "type": "module",
   "scripts": {
     "build": "pnpm -r build",
     "clean": "pnpm -r clean",
     "dev": "pnpm --filter @feedback-forge/payload-plugin dev",
-    "lint": "pnpm -r lint",
-    "lint:fix": "pnpm -r lint:fix",
+    "lint": "pnpm eslint --fix . && pnpm prettier --write .",
     "test": "pnpm -r test"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@types/node": "^22.5.4",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
     "copyfiles": "^2.4.1",
-    "eslint": "^9.23.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
     "rimraf": "6.1.0",
     "typescript": "5.7.3"
   }

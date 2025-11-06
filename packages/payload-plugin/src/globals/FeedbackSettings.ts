@@ -1,5 +1,5 @@
-import type { GlobalConfig } from 'payload'
-import {defaultFeedbackSystemPrompt} from '@feedback-forge/core'
+import type { GlobalConfig } from 'payload';
+import { defaultFeedbackSystemPrompt } from '@feedback-forge/core';
 
 export const FeedbackSettings: GlobalConfig = {
   slug: 'feedback-settings',
@@ -170,7 +170,8 @@ export const FeedbackSettings: GlobalConfig = {
           label: 'System Prompt',
           defaultValue: defaultFeedbackSystemPrompt,
           admin: {
-            placeholder: 'You are a helpful assistant that generates developer prompts from user feedback.',
+            placeholder:
+              'You are a helpful assistant that generates developer prompts from user feedback.',
           },
         },
         {
@@ -182,4 +183,4 @@ export const FeedbackSettings: GlobalConfig = {
       ],
     },
   ],
-}
+};

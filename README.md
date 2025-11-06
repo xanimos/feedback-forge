@@ -12,11 +12,11 @@ At its core, Feedback Forge provides a seamless way to gather feedback through a
 
 This is a monorepo containing the following packages:
 
-*   **[`@feedback-forge/payload-plugin`](./packages/payload-plugin/README.md):** The main plugin for Payload CMS. This is the primary entry point for integrating Feedback Forge into your Payload project.
-*   **[`@feedback-forge/react-widget`](./packages/react-widget/README.md):** A customizable React component for collecting user feedback.
-*   **[`@feedback-forge/core`](./packages/core/README.md):** Contains the core types, utilities, and the main feedback processing logic.
-*   **[`@feedback-forge/integration-github`](./packages/integration-github/README.md):** An integration for creating GitHub issues from feedback.
-*   **[`@feedback-forge/integration-jules`](./packages/integration-jules/README.md):** An integration for starting Jules AI coding sessions.
+- **[`@feedback-forge/payload-plugin`](./packages/payload-plugin/README.md):** The main plugin for Payload CMS. This is the primary entry point for integrating Feedback Forge into your Payload project.
+- **[`@feedback-forge/react-widget`](./packages/react-widget/README.md):** A customizable React component for collecting user feedback.
+- **[`@feedback-forge/core`](./packages/core/README.md):** Contains the core types, utilities, and the main feedback processing logic.
+- **[`@feedback-forge/integration-github`](./packages/integration-github/README.md):** An integration for creating GitHub issues from feedback.
+- **[`@feedback-forge/integration-jules`](./packages/integration-jules/README.md):** An integration for starting Jules AI coding sessions.
 
 ## Getting Started
 

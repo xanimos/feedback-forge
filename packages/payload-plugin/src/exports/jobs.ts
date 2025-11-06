@@ -1,1 +1,1 @@
-export {getProcessFeedbackJob} from '../jobs/processFeedback.js';
+export { getProcessFeedbackJob } from '../jobs/processFeedback.js';

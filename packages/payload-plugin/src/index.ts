@@ -1,30 +1,29 @@
-import type { Config } from 'payload'
+import type { Config } from 'payload';
 
 import type { PayloadFeedbackForgeConfig } from '@feedback-forge/core';
 
-import { createGithubIssueEndpoint } from './endpoints/createGithubIssue.js'
-import { getFeedbackSettingsEndpoint } from './endpoints/getFeedbackSettings.js'
-import { startJulesSessionHandler } from './endpoints/startJulesSession.js'
-import { allowAnonymous } from './hooks/beforeValidate.js'
-import { dispatchFeedbackJob } from './hooks/dispatchFeedbackJob.js'
-import { FeedbackSettings } from './globals/FeedbackSettings.js'
-import { getProcessFeedbackJob } from './jobs/processFeedback.js'
-
+import { createGithubIssueEndpoint } from './endpoints/createGithubIssue.js';
+import { getFeedbackSettingsEndpoint } from './endpoints/getFeedbackSettings.js';
+import { startJulesSessionHandler } from './endpoints/startJulesSession.js';
+import { allowAnonymous } from './hooks/beforeValidate.js';
+import { dispatchFeedbackJob } from './hooks/dispatchFeedbackJob.js';
+import { FeedbackSettings } from './globals/FeedbackSettings.js';
+import { getProcessFeedbackJob } from './jobs/processFeedback.js';
 
 export const payloadFeedbackForge =
   (pluginOptions: PayloadFeedbackForgeConfig) =>
   (config: Config): Config => {
     if (!config.collections) {
-      config.collections = []
+      config.collections = [];
     }
 
     if (!config.globals) {
-      config.globals = []
+      config.globals = [];
     }
 
-    config.globals.push(FeedbackSettings)
+    config.globals.push(FeedbackSettings);
 
-    const { access, allowAnonymousSubmissions, julesManagedStatuses } = pluginOptions
+    const { access, allowAnonymousSubmissions, julesManagedStatuses } = pluginOptions;
     config.collections.push({
       slug: 'feedback',
       access: {
@@ -134,59 +133,54 @@ export const payloadFeedbackForge =
         afterChange: [dispatchFeedbackJob],
         beforeValidate: allowAnonymousSubmissions ? [allowAnonymous] : [],
       },
-    })
-
+    });
 
     /**
      * If the plugin is disabled, we still want to keep added collections/fields so the database schema is consistent which is important for migrations.
      * If your plugin heavily modifies the database schema, you may want to remove this property.
      */
     if (pluginOptions.disabled) {
-      return config
+      return config;
     }
 
     if (!config.endpoints) {
-      config.endpoints = []
+      config.endpoints = [];
     }
 
-    config.endpoints.push(createGithubIssueEndpoint)
-    config.endpoints.push(getFeedbackSettingsEndpoint)
+    config.endpoints.push(createGithubIssueEndpoint);
+    config.endpoints.push(getFeedbackSettingsEndpoint);
     config.endpoints.push({
       handler: startJulesSessionHandler,
       method: 'post',
       path: '/feedback-forge/start-jules-session',
-    })
+    });
 
     if (!config.jobs) {
-      config.jobs = {}
+      config.jobs = {};
     }
 
     if (!config.jobs.tasks) {
-      config.jobs.tasks = []
+      config.jobs.tasks = [];
     }
 
-    config.jobs.tasks.push(getProcessFeedbackJob(pluginOptions))
+    config.jobs.tasks.push(getProcessFeedbackJob(pluginOptions));
 
     if (!config.jobs.autoRun) {
-      config.jobs.autoRun = []
+      config.jobs.autoRun = [];
     }
 
     const arunConf = {
       cron: '*/5 * * * *',
-      queue: 'feedbackForge'
+      queue: 'feedbackForge',
     };
 
     if (typeof config.jobs.autoRun == 'function') {
       const currentAutoRun = config.jobs.autoRun;
       config.jobs.autoRun = async (payload) => {
-        return [
-          ...await currentAutoRun(payload),
-          arunConf
-        ]
-      }
+        return [...(await currentAutoRun(payload)), arunConf];
+      };
+    } else {
+      config.jobs.autoRun.push(arunConf);
     }
-    else {
-      config.jobs.autoRun.push(arunConf)
-    }
-    return config
-  }
+    return config;
+  };
