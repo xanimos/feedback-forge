@@ -43,12 +43,12 @@ export default buildConfig({
 
 ## Plugin Options
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `access` | `object` | `isAdmin` | Payload [Access Control](https://payloadcms.com/docs/access-control/overview) functions for the `feedback` collection. |
-| `allowAnonymousSubmissions` | `boolean` | `true` | If `true`, allows feedback submissions from unauthenticated users via the API endpoint. |
-| `cron` | `string` | `undefined` | A cron string (e.g., `'*/5 * * * *'`) to schedule the feedback processing job. If undefined, the job must be triggered manually. |
-| `disabled` | `boolean` | `false` | Disables the plugin's functionality (endpoints, jobs) while keeping the collection in the schema. |
+| Option                      | Type      | Default     | Description                                                                                                                      |
+| --------------------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `access`                    | `object`  | `isAdmin`   | Payload [Access Control](https://payloadcms.com/docs/access-control/overview) functions for the `feedback` collection.           |
+| `allowAnonymousSubmissions` | `boolean` | `true`      | If `true`, allows feedback submissions from unauthenticated users via the API endpoint.                                          |
+| `cron`                      | `string`  | `undefined` | A cron string (e.g., `'*/5 * * * *'`) to schedule the feedback processing job. If undefined, the job must be triggered manually. |
+| `disabled`                  | `boolean` | `false`     | Disables the plugin's functionality (endpoints, jobs) while keeping the collection in the schema.                                |
 
 ## Features
 
