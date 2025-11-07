@@ -35,7 +35,6 @@ export default buildConfig({
       },
       allowAnonymousSubmissions: true,
       cron: '*/5 * * * *', // Optional: cron schedule to process feedback
-      feedbackSystemPrompt: 'You are an expert software engineer...', // Optional: custom AI prompt
     }),
   ],
   // ... rest of your config
@@ -44,26 +43,31 @@ export default buildConfig({
 
 ## Plugin Options
 
-| Option                      | Type      | Default     | Description                                                                                                                      |
-| --------------------------- | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `access`                    | `object`  | `isAdmin`   | Payload [Access Control](https://payloadcms.com/docs/access-control/overview) functions for the `feedback` collection.           |
-| `allowAnonymousSubmissions` | `boolean` | `true`      | If `true`, allows feedback submissions from unauthenticated users via the API endpoint.                                          |
-| `cron`                      | `string`  | `undefined` | A cron string (e.g., `'*/5 * * * *'`) to schedule the feedback processing job. If undefined, the job must be triggered manually. |
-| `disabled`                  | `boolean` | `false`     | Disables the plugin's functionality (endpoints, jobs) while keeping the collection in the schema.                                |
-| `feedbackSystemPrompt`      | `string`  | (default)   | A custom system prompt for the Genkit AI flow to tailor how it generates developer prompts from user feedback.                   |
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `access` | `object` | `isAdmin` | Payload [Access Control](https://payloadcms.com/docs/access-control/overview) functions for the `feedback` collection. |
+| `allowAnonymousSubmissions` | `boolean` | `true` | If `true`, allows feedback submissions from unauthenticated users via the API endpoint. |
+| `cron` | `string` | `undefined` | A cron string (e.g., `'*/5 * * * *'`) to schedule the feedback processing job. If undefined, the job must be triggered manually. |
+| `disabled` | `boolean` | `false` | Disables the plugin's functionality (endpoints, jobs) while keeping the collection in the schema. |
 
 ## Features
 
 This plugin automatically adds the following to your Payload project:
 
 - **`feedback` Collection**: A new collection to store all user feedback submissions.
-- **`feedback-settings` Global**: A global singleton in your admin panel to configure integrations.
+- **`feedback-settings` Global**: A global singleton in your admin panel to configure integrations and AI settings.
 - **`/api/feedback` Endpoint**: A public API endpoint for submitting feedback, typically used by the [`@feedback-forge/react-widget`](../react-widget/README.md).
 - **Feedback Processing Job**: A background job that uses AI to process new feedback, generate a developer prompt, and create issues in external services.
 
 ## Integrations Setup
 
-All integrations are configured from the **Feedback Settings** global in your Payload admin panel.
+All integrations and AI settings are configured from the **Feedback Settings** global in your Payload admin panel.
+
+### Genkit AI Integration
+
+1.  Navigate to `Admin -> Globals -> Feedback Settings`.
+2.  Fill in the "Genkit" fields:
+    - **Feedback System Prompt**: A custom system prompt for the Genkit AI flow to tailor how it generates developer prompts from user feedback.
 
 ### GitHub Integration
 
