@@ -1,5 +1,15 @@
 # @feedback-forge/payload-plugin
 
+## 0.2.1
+
+### Patch Changes
+
+- Package only necessary files
+- Updated dependencies
+  - @feedback-forge/core@0.2.1
+  - @feedback-forge/integration-jules@0.2.1
+  - @feedback-forge/react-widget@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

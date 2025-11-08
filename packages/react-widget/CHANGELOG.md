@@ -1,5 +1,11 @@
 # @feedback-forge/react-widget
 
+## 0.2.1
+
+### Patch Changes
+
+- Package only necessary files
+
 ## 0.2.0
 
 ### Minor Changes
