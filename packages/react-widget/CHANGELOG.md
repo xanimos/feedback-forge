@@ -1,5 +1,11 @@
 # @feedback-forge/react-widget
 
+## 0.2.2
+
+### Patch Changes
+
+- Include missing dependency
+
 ## 0.2.1
 
 ### Patch Changes
