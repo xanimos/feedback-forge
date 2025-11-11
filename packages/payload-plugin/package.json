@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "@feedback-forge/core": "workspace:*",
+    "@feedback-forge/integration-github": "workspace:*",
     "@feedback-forge/integration-jules": "workspace:*",
     "@feedback-forge/react-widget": "workspace:*"
   },
