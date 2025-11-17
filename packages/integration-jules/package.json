@@ -19,8 +19,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./client": "./dist/exports/client.js"
+    ".": "./dist/index.js"
   },
   "scripts": {
     "build": "rimraf dist && tsc",
@@ -37,17 +36,8 @@
     "@feedback-forge/core": "workspace:*"
   },
   "devDependencies": {
-    "@payloadcms/ui": "^3.60.0",
-    "@types/react": "^19.1.8",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
-    "payload": "^3.60.0",
-    "react": "^19.1.0",
     "typescript": "5.7.3"
-  },
-  "peerDependencies": {
-    "@payloadcms/ui": "^3.60.0",
-    "payload": "^3.60.0",
-    "react": "^19.1.0"
   }
 }

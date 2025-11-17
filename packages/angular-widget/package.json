@@ -1,0 +1,47 @@
+{
+  "name": "@feedback-forge/angular-widget",
+  "version": "0.2.2",
+  "description": "Angular component for collecting user feedback in Feedback Forge",
+  "author": "Feedback Forge",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git",
+    "directory": "packages/angular-widget"
+  },
+  "keywords": [
+    "feedback-forge",
+    "angular",
+    "widget",
+    "feedback",
+    "component"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "@angular/common": "^18.0.0 || ^19.0.0",
+    "@angular/core": "^18.0.0 || ^19.0.0",
+    "@angular/forms": "^18.0.0 || ^19.0.0",
+    "rxjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/forms": "^19.0.0",
+    "@types/node": "^22.0.0",
+    "rimraf": "^6.1.0",
+    "rxjs": "^7.8.1",
+    "typescript": "~5.7.3"
+  }
+}

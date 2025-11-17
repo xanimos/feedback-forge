@@ -1,6 +1,7 @@
 import type { PayloadHandler } from 'payload';
 
 import { addDataAndFileToRequest } from 'payload';
+import { createJulesSession, JulesApiError } from '@feedback-forge/integration-jules';
 
 export type StartSessionArgs = {
   developerPrompt: string;
@@ -28,62 +29,52 @@ export const startJulesSessionHandler: PayloadHandler = async (req) => {
     });
 
     const julesApiKey = feedbackSettings.jules?.julesApiKey;
-    const julesApiUrl =
-      feedbackSettings.jules?.julesApiUrl || 'https://jules.googleapis.com/v1alpha/sessions';
+    const julesApiUrl = feedbackSettings.jules?.julesApiUrl;
+    const githubRepo = feedbackSettings.jules?.githubRepo;
+    const githubStartingBranch = feedbackSettings.jules?.githubStartingBranch || 'main';
 
     if (!julesApiKey) {
       throw new Error('Jules API Key not set in Feedback Settings.');
     }
 
-    const response = await fetch(julesApiUrl, {
-      body: JSON.stringify({
-        prompt: developerPrompt,
-        sourceContext: {
-          githubRepoContext: {
-            startingBranch: feedbackSettings.jules?.githubStartingBranch || 'main',
-          },
-          source: `sources/github/${feedbackSettings.jules?.githubRepo}`,
-        },
-        title,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': julesApiKey,
-      },
-      method: 'POST',
+    if (!githubRepo) {
+      throw new Error('GitHub repository not set in Feedback Settings.');
+    }
+
+    // Use the framework-agnostic createJulesSession function
+    const julesSession = await createJulesSession({
+      title,
+      developerPrompt,
+      julesApiKey,
+      julesApiUrl,
+      githubRepo,
+      githubStartingBranch,
     });
 
-    if (response.ok) {
-      const julesSession = await response.json();
-      const julesSessionId = julesSession.id;
+    // Update feedback with session ID and status
+    await payload.update({
+      id: feedbackId,
+      collection: 'feedback',
+      data: {
+        julesSessionId: julesSession.id,
+        status: feedbackSettings.jules?.julesManagedStatuses?.inProgress || 'in-progress',
+      },
+    });
 
-      await payload.update({
-        id: feedbackId,
-        collection: 'feedback',
-        data: {
-          julesSessionId,
-          status: feedbackSettings.jules?.julesManagedStatuses?.inProgress || 'in-progress',
-        },
-      });
+    return Response.json({ message: 'Jules session started successfully.' }, { status: 200 });
+  } catch (error) {
+    // Log the error
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    payload.logger.error(`Error starting Jules session: ${errorMessage}`);
 
-      return Response.json({ message: 'Jules session started successfully.' }, { status: 200 });
-    } else {
-      const errorData = await response.text();
-      payload.logger.error(`Jules API Error: ${errorData}`);
-      await payload.update({
-        id: feedbackId,
-        collection: 'feedback',
-        data: {
-          status: feedbackSettings.jules?.julesManagedStatuses?.received || 'received',
-        },
-      });
-      return Response.json(
-        { error: 'Failed to start Jules session.' },
-        { status: response.status },
+    // If it's a Jules API error, log additional details
+    if (error instanceof JulesApiError) {
+      payload.logger.error(
+        `Jules API Error Details - Status: ${error.statusCode}, Body: ${error.responseBody}`,
       );
     }
-  } catch (error) {
-    payload.logger.error(`Error starting Jules session: ${error}`);
+
+    // Reset feedback status on error
     try {
       const feedbackSettings = await payload.findGlobal({
         slug: 'feedback-settings',
@@ -98,6 +89,15 @@ export const startJulesSessionHandler: PayloadHandler = async (req) => {
     } catch (resetError) {
       payload.logger.error(`Failed to reset feedback status: ${resetError}`);
     }
+
+    // Return appropriate error response
+    if (error instanceof JulesApiError && error.statusCode) {
+      return Response.json(
+        { error: 'Failed to start Jules session.' },
+        { status: error.statusCode },
+      );
+    }
+
     return Response.json({ error: 'An internal error occurred.' }, { status: 500 });
   }
 };

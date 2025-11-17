@@ -1,0 +1,18 @@
+# Compiled output
+dist/
+*.tsbuildinfo
+
+# Node modules
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

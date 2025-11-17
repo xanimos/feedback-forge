@@ -1,7 +1,7 @@
 import { googleAI } from '@genkit-ai/google-genai';
 import { genkit, z } from 'genkit';
 
-import type { PayloadFeedbackForgeConfig } from './types.js';
+import type { FeedbackForgeConfig } from './types.js';
 
 import { defaultFeedbackSystemPrompt } from './defaultFeedbackSystemPrompt.js';
 
@@ -11,7 +11,7 @@ export const DeveloperPromptOutputSchema = z.object({
 });
 
 // Factory function to create the feedbackProcessor flow
-export const getFeedbackProcessor = (options: PayloadFeedbackForgeConfig) => {
+export const getFeedbackProcessor = (options: FeedbackForgeConfig) => {
   const { ai: aiConfig, feedbackSystemPrompt: configSystemPrompt } = options;
 
   // Initialize Genkit with the Google AI plugin

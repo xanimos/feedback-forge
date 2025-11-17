@@ -1,0 +1,51 @@
+{
+  "name": "@feedback-forge/nestjs-plugin",
+  "version": "0.2.2",
+  "description": "NestJS plugin for Feedback Forge - process feedback, create GitHub issues, and start Jules sessions",
+  "author": "Feedback Forge",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git",
+    "directory": "packages/nestjs-plugin"
+  },
+  "keywords": [
+    "feedback-forge",
+    "nestjs",
+    "api",
+    "feedback",
+    "plugin"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@feedback-forge/core": "workspace:*",
+    "@feedback-forge/integration-github": "workspace:*",
+    "@feedback-forge/integration-jules": "workspace:*"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0 || ^11.0.0",
+    "@nestjs/core": "^10.0.0 || ^11.0.0",
+    "class-validator": "^0.14.0",
+    "class-transformer": "^0.5.0",
+    "reflect-metadata": "^0.1.13 || ^0.2.0",
+    "rxjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@types/node": "^22.0.0",
+    "class-validator": "^0.14.0",
+    "class-transformer": "^0.5.0",
+    "rimraf": "^6.1.0",
+    "typescript": "~5.7.3"
+  }
+}

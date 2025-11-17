@@ -1,6 +1,6 @@
 import type { Config } from 'payload';
 
-import type { PayloadFeedbackForgeConfig } from '@feedback-forge/core';
+import type { PayloadFeedbackForgeConfig } from './types.js';
 
 import { createGithubIssueEndpoint } from './endpoints/createGithubIssue.js';
 import { getFeedbackSettingsEndpoint } from './endpoints/getFeedbackSettings.js';
@@ -71,7 +71,7 @@ export const payloadFeedbackForge =
           admin: {
             position: 'sidebar',
             components: {
-              Field: `@feedback-forge/integration-github/client#GithubIssueManagement`,
+              Field: `@feedback-forge/payload-plugin/client#GithubIssueManagement`,
             },
             condition: (data) => data.developerPrompt,
           },
@@ -91,7 +91,7 @@ export const payloadFeedbackForge =
           admin: {
             position: 'sidebar',
             components: {
-              Field: `@feedback-forge/integration-jules/client#JulesSessionManagement`,
+              Field: `@feedback-forge/payload-plugin/client#JulesSessionManagement`,
             },
             condition: (data) => data.developerPrompt,
           },

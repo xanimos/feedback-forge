@@ -1,6 +1,6 @@
 import type { TaskConfig } from 'payload';
 
-import type { PayloadFeedbackForgeConfig } from '@feedback-forge/core';
+import type { PayloadFeedbackForgeConfig } from '../types.js';
 
 import { getFeedbackProcessor } from '@feedback-forge/core';
 import { createIssue } from '@feedback-forge/integration-github';
@@ -29,8 +29,10 @@ export const getProcessFeedbackJob = (
           const { breadcrumbs, feedback, title } = feedbackDoc;
 
           // Get the configured Genkit flow
+          // Destructure to exclude Payload-specific 'access' property
+          const { access: _, ...coreOptions } = options;
           const feedbackProcessor = getFeedbackProcessor({
-            ...options,
+            ...coreOptions,
             ai: {
               model: feedbackSettings.genkit.model,
               apiKey: feedbackSettings.genkit.apiKey,

@@ -1,0 +1,26 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.pnpm": true,
+    "**/pnpm-lock.yaml": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.pnpm/**": true
+  },
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "node_modules/**",
+    ".pnpm/**"
+  ],
+  "stylelint.packageManager": "pnpm",
+  "npm.scriptRunner": "pnpm",
+  "npm.packageManager": "pnpm"
+}

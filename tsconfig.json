@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020"],
+    "skipLibCheck": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "paths": {
+      "@feedback-forge/core": ["./packages/core/src"],
+      "@feedback-forge/core/*": ["./packages/core/src/*"],
+      "@feedback-forge/integration-github": ["./packages/integration-github/src"],
+      "@feedback-forge/integration-github/*": ["./packages/integration-github/src/*"],
+      "@feedback-forge/integration-jules": ["./packages/integration-jules/src"],
+      "@feedback-forge/integration-jules/*": ["./packages/integration-jules/src/*"],
+      "@feedback-forge/react-widget": ["./packages/react-widget/src"],
+      "@feedback-forge/react-widget/*": ["./packages/react-widget/src/*"],
+      "@feedback-forge/angular-widget": ["./packages/angular-widget/src"],
+      "@feedback-forge/angular-widget/*": ["./packages/angular-widget/src/*"],
+      "@feedback-forge/nestjs-plugin": ["./packages/nestjs-plugin/src"],
+      "@feedback-forge/nestjs-plugin/*": ["./packages/nestjs-plugin/src/*"],
+      "@feedback-forge/payload-plugin": ["./packages/payload-plugin/src"],
+      "@feedback-forge/payload-plugin/*": ["./packages/payload-plugin/src/*"]
+    }
+  },
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/integration-github" },
+    { "path": "./packages/integration-jules" },
+    { "path": "./packages/react-widget" },
+    { "path": "./packages/angular-widget" },
+    { "path": "./packages/nestjs-plugin" },
+    { "path": "./packages/payload-plugin" }
+  ],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/node_modules"
+  ]
+}

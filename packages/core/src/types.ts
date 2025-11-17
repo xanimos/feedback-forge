@@ -1,16 +1,32 @@
-import type { Access } from 'payload';
+/**
+ * Generic access control function that can be used with any framework.
+ * Takes a context object and returns whether access is allowed.
+ */
+export type AccessControlFunction<TContext = any> = (
+  context: TContext,
+) => boolean | Promise<boolean>;
 
-export type PayloadFeedbackForgeConfig = {
+/**
+ * Access control configuration for the Feedback collection.
+ * Optional and framework-agnostic.
+ */
+export type AccessControl<TContext = any> = {
+  create?: AccessControlFunction<TContext>;
+  delete?: AccessControlFunction<TContext>;
+  read?: AccessControlFunction<TContext>;
+  update?: AccessControlFunction<TContext>;
+};
+
+/**
+ * Framework-agnostic configuration for Feedback Forge.
+ * This can be used with any backend framework (Payload, NestJS, Express, etc.)
+ */
+export type FeedbackForgeConfig<TContext = any> = {
   /**
    * Access control for the Feedback collection.
-   * @default isAdmin
+   * Optional - if not provided, framework defaults will be used.
    */
-  access?: {
-    create?: Access;
-    delete?: Access;
-    read?: Access;
-    update?: Access;
-  };
+  access?: AccessControl<TContext>;
 
   /**
    * Allow anonymous users to submit feedback via the REST API.

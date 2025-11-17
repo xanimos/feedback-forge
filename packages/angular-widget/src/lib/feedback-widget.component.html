@@ -1,0 +1,67 @@
+<div class="feedback-widget-container" [ngStyle]="customStyles?.widgetContainer">
+  <div *ngIf="isOpen" class="feedback-form-container" [ngStyle]="customStyles?.formContainer">
+    <form (ngSubmit)="submitFeedback()">
+      <h3>Submit Feedback</h3>
+
+      <input
+        type="text"
+        [(ngModel)]="title"
+        name="title"
+        placeholder="Title"
+        required
+        [ngStyle]="customStyles?.input"
+        class="feedback-input"
+      />
+
+      <textarea
+        [(ngModel)]="feedback"
+        name="feedback"
+        placeholder="Describe your issue or idea..."
+        required
+        [ngStyle]="customStyles?.textarea"
+        class="feedback-textarea"
+      ></textarea>
+
+      <input
+        type="text"
+        [(ngModel)]="breadcrumbs"
+        name="breadcrumbs"
+        placeholder="Breadcrumbs (optional)"
+        [ngStyle]="customStyles?.input"
+        class="feedback-input"
+      />
+
+      <div class="button-group">
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          [ngStyle]="customStyles?.button"
+          class="feedback-button"
+        >
+          {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+        </button>
+
+        <button
+          type="button"
+          (click)="toggleWidget()"
+          [ngStyle]="customStyles?.closeButton"
+          class="feedback-button close-button"
+        >
+          Close
+        </button>
+      </div>
+
+      <p *ngIf="error" class="error-message">{{ error }}</p>
+      <p *ngIf="success" class="success-message">Feedback submitted successfully!</p>
+    </form>
+  </div>
+
+  <button
+    *ngIf="!isOpen"
+    (click)="toggleWidget()"
+    [ngStyle]="customStyles?.button"
+    class="feedback-button toggle-button"
+  >
+    Feedback
+  </button>
+</div>
