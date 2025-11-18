@@ -91,6 +91,13 @@ const buildConfigWithMemoryDB = async () => {
           read: () => true,
           update: () => true,
         },
+        ai: {
+          provider: 'genkit',
+          model: 'gemini-2.5-flash',
+          apiKey: process.env.GOOGLE_API_KEY || 'test-key',
+          temperature: 0.7,
+        },
+        githubRepo: 'test/repo',
         allowAnonymousSubmissions: false,
         cron: '*/5 * * * *',
       }),
