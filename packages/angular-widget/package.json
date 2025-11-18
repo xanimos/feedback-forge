@@ -1,6 +1,6 @@
 {
   "name": "@feedback-forge/angular-widget",
-  "version": "0.2.2",
+  "version": "0.3.0-beta.0",
   "description": "Angular component for collecting user feedback in Feedback Forge",
   "author": "Feedback Forge",
   "license": "MIT",

@@ -1,6 +1,6 @@
 {
   "name": "@feedback-forge/react-widget",
-  "version": "0.2.2",
+  "version": "0.3.0-beta.0",
   "description": "A customizable React component for collecting user feedback.",
   "author": "Feedback Forge",
   "repository": {

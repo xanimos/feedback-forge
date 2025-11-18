@@ -1,6 +1,6 @@
 {
   "name": "@feedback-forge/nestjs-plugin",
-  "version": "0.2.2",
+  "version": "0.3.0-beta.0",
   "description": "NestJS plugin for Feedback Forge - process feedback, create GitHub issues, and start Jules sessions",
   "author": "Feedback Forge",
   "license": "MIT",

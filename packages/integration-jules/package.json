@@ -1,6 +1,6 @@
 {
   "name": "@feedback-forge/integration-jules",
-  "version": "0.2.2",
+  "version": "0.3.0-beta.0",
   "description": "Jules integration for Feedback Forge. Initiates AI coding sessions from feedback.",
   "author": "Feedback Forge",
   "repository": {

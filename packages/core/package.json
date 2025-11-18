@@ -1,6 +1,6 @@
 {
   "name": "@feedback-forge/core",
-  "version": "0.2.2",
+  "version": "0.3.0-beta.0",
   "description": "Core types, utilities, and AI feedback processing logic for the Feedback Forge ecosystem.",
   "author": "Feedback Forge",
   "repository": {
