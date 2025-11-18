@@ -28,16 +28,17 @@ export const getProcessFeedbackJob = (
         if (feedbackDoc) {
           const { breadcrumbs, feedback, title } = feedbackDoc;
 
-          // Get the configured Genkit flow
+          // Get the configured AI flow
           // Destructure to exclude Payload-specific 'access' property
           const { access: _, ...coreOptions } = options;
           const feedbackProcessor = getFeedbackProcessor({
             ...coreOptions,
             ai: {
-              model: feedbackSettings.genkit.model,
-              apiKey: feedbackSettings.genkit.apiKey,
-              systemPrompt: feedbackSettings.genkit.systemPrompt,
-              temperature: feedbackSettings.genkit.temperature,
+              provider: feedbackSettings.ai.provider || 'genkit', // default for backward compat
+              model: feedbackSettings.ai.model,
+              apiKey: feedbackSettings.ai.apiKey,
+              systemPrompt: feedbackSettings.ai.systemPrompt,
+              temperature: feedbackSettings.ai.temperature,
             },
           });
 

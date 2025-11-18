@@ -10,7 +10,5 @@
     "@feedback-forge/payload-plugin": "0.3.0",
     "@feedback-forge/react-widget": "0.3.0"
   },
-  "changesets": [
-    "tame-pugs-fail"
-  ]
+  "changesets": ["tame-pugs-fail"]
 }

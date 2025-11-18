@@ -1,12 +1,16 @@
+import type { AIProvider } from '@feedback-forge/core';
+
 export interface NestJSFeedbackForgeConfig {
   /**
-   * Genkit AI configuration for processing feedback
+   * AI configuration for processing feedback
    */
   ai: {
+    provider?: 'vercel' | 'genkit' | 'custom';
     model: string;
     apiKey: string;
     systemPrompt?: string;
     temperature?: number;
+    customProvider?: AIProvider;
   };
 
   /**

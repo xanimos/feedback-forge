@@ -1,3 +1,5 @@
+import type { AIProvider } from './providers/index.js';
+
 /**
  * Generic access control function that can be used with any framework.
  * Takes a context object and returns whether access is allowed.
@@ -59,11 +61,68 @@ export type FeedbackForgeConfig<TContext = any> = {
    */
   feedbackSystemPrompt?: string;
 
+  /**
+   * AI configuration for feedback processing.
+   */
   ai?: {
+    /**
+     * The AI provider to use for feedback processing.
+     * - 'vercel': Use Vercel AI SDK (@vercel/ai)
+     * - 'genkit': Use Google Genkit SDK (@genkit-ai/google-genai) [default]
+     * - 'custom': Use a custom provider implementation (must provide customProvider)
+     * @default 'genkit'
+     */
+    provider?: 'vercel' | 'genkit' | 'custom';
+
+    /**
+     * The model identifier to use with the selected provider.
+     *
+     * Format depends on the provider:
+     * - Genkit: Use model names like 'gemini-2.5-flash', 'gemini-2.5-pro'
+     * - Vercel: Use format 'provider:model' like 'openai:gpt-4', 'anthropic:claude-3-5-sonnet-20241022'
+     * - Custom: Format defined by your custom provider implementation
+     *
+     * @example 'gemini-2.5-flash' // Genkit
+     * @example 'openai:gpt-4-turbo' // Vercel AI SDK
+     * @example 'anthropic:claude-3-5-sonnet-20241022' // Vercel AI SDK
+     */
     model: string;
+
+    /**
+     * API key for the AI provider.
+     * Required for all providers unless authentication is handled externally.
+     */
     apiKey: string;
+
+    /**
+     * Optional system prompt override for the AI model.
+     * If not provided, uses feedbackSystemPrompt or the default system prompt.
+     */
     systemPrompt?: string;
+
+    /**
+     * Temperature for AI generation (0.0 - 1.0).
+     * Lower values are more deterministic, higher values are more creative.
+     * @default 0.8
+     */
     temperature?: number;
+
+    /**
+     * Custom AI provider implementation.
+     * Required when provider is set to 'custom'.
+     * Must implement the AIProvider interface.
+     *
+     * @example
+     * ```typescript
+     * customProvider: {
+     *   generate: async ({ prompt, system, schema, temperature }) => {
+     *     // Your custom implementation
+     *     return { output: result, usage: { inputTokens: 50, outputTokens: 100, totalTokens: 150 } };
+     *   }
+     * }
+     * ```
+     */
+    customProvider?: AIProvider;
   };
 
   github?: {

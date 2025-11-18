@@ -40,9 +40,5 @@
     { "path": "./packages/nestjs-plugin" },
     { "path": "./packages/payload-plugin" }
   ],
-  "exclude": [
-    "node_modules",
-    "**/dist",
-    "**/node_modules"
-  ]
+  "exclude": ["node_modules", "**/dist", "**/node_modules"]
 }

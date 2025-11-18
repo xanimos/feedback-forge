@@ -44,7 +44,7 @@ import { HttpClientModule } from '@angular/common/http';
         [userId]="currentUserId"
       />
     </div>
-  `
+  `,
 })
 export class AppComponent {
   currentUserId = 'user-123';
@@ -62,12 +62,8 @@ import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FeedbackWidgetModule
-  ],
-  bootstrap: [AppComponent]
+  imports: [BrowserModule, HttpClientModule, FeedbackWidgetModule],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
 ```
@@ -86,7 +82,7 @@ import { Component } from '@angular/core';
         [userId]="currentUserId"
       />
     </div>
-  `
+  `,
 })
 export class AppComponent {
   currentUserId = 'user-123';
@@ -95,14 +91,14 @@ export class AppComponent {
 
 ## Props
 
-| Prop | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `feedbackApiUrl` | `string` | Yes | - | The API endpoint to submit feedback to |
-| `userId` | `string \| number` | No | `undefined` | Optional user identifier to associate with feedback |
-| `defaultTitle` | `string` | No | `''` | Default value for the title field |
-| `defaultFeedback` | `string` | No | `''` | Default value for the feedback textarea |
-| `defaultBreadcrumbs` | `string` | No | `''` | Default value for the breadcrumbs field |
-| `customStyles` | `FeedbackWidgetStyles` | No | `undefined` | Custom styles to override default appearance |
+| Prop                 | Type                   | Required | Default     | Description                                         |
+| -------------------- | ---------------------- | -------- | ----------- | --------------------------------------------------- |
+| `feedbackApiUrl`     | `string`               | Yes      | -           | The API endpoint to submit feedback to              |
+| `userId`             | `string \| number`     | No       | `undefined` | Optional user identifier to associate with feedback |
+| `defaultTitle`       | `string`               | No       | `''`        | Default value for the title field                   |
+| `defaultFeedback`    | `string`               | No       | `''`        | Default value for the feedback textarea             |
+| `defaultBreadcrumbs` | `string`               | No       | `''`        | Default value for the breadcrumbs field             |
+| `customStyles`       | `FeedbackWidgetStyles` | No       | `undefined` | Custom styles to override default appearance        |
 
 ## Custom Styling
 
@@ -121,25 +117,25 @@ import { FeedbackWidgetComponent, FeedbackWidgetStyles } from '@feedback-forge/a
       [feedbackApiUrl]="'http://localhost:3000/api/feedback'"
       [customStyles]="customStyles"
     />
-  `
+  `,
 })
 export class AppComponent {
   customStyles: FeedbackWidgetStyles = {
     button: {
       backgroundColor: '#28a745',
-      borderRadius: '8px'
+      borderRadius: '8px',
     },
     formContainer: {
       width: '400px',
-      padding: '30px'
+      padding: '30px',
     },
     input: {
-      borderColor: '#28a745'
+      borderColor: '#28a745',
     },
     textarea: {
       borderColor: '#28a745',
-      minHeight: '150px'
-    }
+      minHeight: '150px',
+    },
   };
 }
 ```
@@ -228,11 +224,7 @@ import { FeedbackWidgetComponent } from '@feedback-forge/angular-widget';
   selector: 'app-root',
   standalone: true,
   imports: [FeedbackWidgetComponent],
-  template: `
-    <ff-feedback-widget
-      [feedbackApiUrl]="'http://localhost:3000/feedback'"
-    />
-  `
+  template: ` <ff-feedback-widget [feedbackApiUrl]="'http://localhost:3000/feedback'" /> `,
 })
 export class AppComponent {}
 ```
@@ -245,15 +237,15 @@ The package includes full TypeScript definitions:
 import {
   FeedbackWidgetComponent,
   FeedbackSubmission,
-  FeedbackWidgetStyles
+  FeedbackWidgetStyles,
 } from '@feedback-forge/angular-widget';
 
 // Type-safe props
 const styles: FeedbackWidgetStyles = {
   button: {
     backgroundColor: '#007bff',
-    padding: '12px 24px'
-  }
+    padding: '12px 24px',
+  },
 };
 
 // Type-safe submission data
@@ -261,7 +253,7 @@ const submission: FeedbackSubmission = {
   title: 'Bug Report',
   feedback: 'The login button is not working',
   breadcrumbs: 'Home > Login',
-  userId: 'user-123'
+  userId: 'user-123',
 };
 ```
 

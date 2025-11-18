@@ -16,10 +16,7 @@
     "**/dist/**": true,
     "**/.pnpm/**": true
   },
-  "typescript.preferences.autoImportFileExcludePatterns": [
-    "node_modules/**",
-    ".pnpm/**"
-  ],
+  "typescript.preferences.autoImportFileExcludePatterns": ["node_modules/**", ".pnpm/**"],
   "stylelint.packageManager": "pnpm",
   "npm.scriptRunner": "pnpm",
   "npm.packageManager": "pnpm"

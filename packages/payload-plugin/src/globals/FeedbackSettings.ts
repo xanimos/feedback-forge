@@ -131,28 +131,32 @@ export const FeedbackSettings: GlobalConfig = {
       ],
     },
     {
-      name: 'genkit',
+      name: 'ai',
       type: 'group',
-      label: 'Genkit Settings',
+      label: 'AI Configuration',
       fields: [
         {
-          name: 'model',
+          name: 'provider',
           type: 'select',
+          label: 'AI Provider',
+          required: true,
+          defaultValue: 'vercel',
+          options: [
+            { label: 'Vercel AI SDK (OpenAI, Anthropic, Google)', value: 'vercel' },
+            { label: 'Google Genkit (Legacy)', value: 'genkit' },
+          ],
+        },
+        {
+          name: 'model',
+          type: 'text',
           label: 'AI Model',
           required: true,
-          options: [
-            'gemini-2.5-pro',
-            'gemini-2.5-pro-preview-tts',
-            'gemini-2.5-flash',
-            'gemini-2.5-flash-preview-09-2025',
-            'gemini-live-2.5-flash-preview',
-            'gemini-2.5-flash-preview-tts',
-            'gemini-2.5-flash-lite',
-            'gemini-2.5-flash-lite-preview-09-2025',
-            'gemini-2.0-flash',
-            'gemini-2.0-flash-lite',
-          ],
-          defaultValue: 'gemini-2.5-flash',
+          defaultValue: 'openai:gpt-4o',
+          admin: {
+            description:
+              'Model format depends on provider. Vercel: "provider:model" (e.g., "openai:gpt-4o", "anthropic:claude-3-5-sonnet-20241022", "google:gemini-2.0-flash"). Genkit: model name only (e.g., "gemini-2.5-flash").',
+            placeholder: 'e.g., openai:gpt-4o',
+          },
         },
         {
           name: 'apiKey',

@@ -23,7 +23,14 @@ export class FeedbackService {
     this.logger.log('Processing feedback with AI');
 
     const feedbackProcessor = getFeedbackProcessor({
-      ai: this.config.ai,
+      ai: {
+        provider: this.config.ai.provider || 'genkit', // backward compatibility
+        model: this.config.ai.model,
+        apiKey: this.config.ai.apiKey,
+        systemPrompt: this.config.ai.systemPrompt,
+        temperature: this.config.ai.temperature,
+        customProvider: this.config.ai.customProvider,
+      },
       feedbackSystemPrompt: this.config.feedbackSystemPrompt,
       githubRepo: this.config.jules?.githubRepo || 'default/repo', // Required by core, but not used in processing
     });

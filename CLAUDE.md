@@ -4,18 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Feedback Forge is a modular, open-source toolkit for collecting, processing, and acting on user feedback. It uses AI (via Google's Genkit) to transform user feedback into actionable developer prompts and can automatically create GitHub issues or initiate Jules AI coding sessions.
+Feedback Forge is a modular, open-source toolkit for collecting, processing, and acting on user feedback. It uses AI (via multiple provider options including Vercel AI SDK and Google's Genkit) to transform user feedback into actionable developer prompts and can automatically create GitHub issues or initiate Jules AI coding sessions.
 
 This is a **pnpm monorepo** with the following packages:
 
 **Framework Integrations:**
+
 - `@feedback-forge/payload-plugin` - Payload CMS plugin with admin UI and background jobs
 - `@feedback-forge/nestjs-plugin` - NestJS module for stateless feedback processing
 - `@feedback-forge/angular-widget` - Angular standalone component (Angular 18+)
 - `@feedback-forge/react-widget` - React feedback collection component
 
 **Core & Integrations:**
-- `@feedback-forge/core` - Framework-agnostic AI processing (Genkit flows)
+
+- `@feedback-forge/core` - Framework-agnostic AI processing (multi-provider support)
 - `@feedback-forge/integration-github` - Framework-agnostic GitHub API client
 - `@feedback-forge/integration-jules` - Framework-agnostic Jules API client
 
@@ -69,10 +71,10 @@ pnpm --filter @feedback-forge/payload-plugin generate:importmap # Generate impor
 
 ### Core Feedback Flow
 
-1. **Collection**: User submits feedback via `@feedback-forge/react-widget`
+1. **Collection**: User submits feedback via `@feedback-forge/react-widget` or `@feedback-forge/angular-widget`
 2. **Storage**: Feedback stored in Payload's `feedback` collection with status "received"
 3. **Processing**: Background job (`feedbackForge_processFeedback`) triggers AI processing
-4. **AI Generation**: Genkit flow (`getFeedbackProcessor` in `packages/core/src/feedbackProcessor.ts:14`) transforms feedback + breadcrumbs into a structured developer prompt
+4. **AI Generation**: AI provider (`getFeedbackProcessor` in `packages/core/src/feedbackProcessor.ts:14`) transforms feedback + breadcrumbs into a structured developer prompt using configured provider (Vercel AI SDK, Genkit, or custom)
 5. **Integration Actions**:
    - GitHub: Automatically create issue (if configured in FeedbackSettings global)
    - Jules: Admin manually triggers Jules session from Payload admin UI
@@ -88,19 +90,25 @@ pnpm --filter @feedback-forge/payload-plugin generate:importmap # Generate impor
   - Background job: `feedbackForge_processFeedback` (auto-runs every 5 minutes via cron)
 - Hooks: `dispatchFeedbackJob` (afterChange), `allowAnonymous` (beforeValidate, conditional)
 
-**AI Processing** (`packages/core/src/feedbackProcessor.ts`)
+**AI Processing (Multi-Provider)** (`packages/core/src/feedbackProcessor.ts`)
 
-- Uses Genkit with Google AI (Gemini models)
-- Default model: `gemini-2.5-flash` with temperature 0.8
+- Uses pluggable AI provider system with abstraction layer
+- Default provider: Vercel AI SDK with model `openai:gpt-4o` and temperature 0.8
+- Supported providers:
+  - **VercelAIProvider** (default): Supports OpenAI, Anthropic, Google, and other Vercel AI SDK models
+  - **GenkitProvider**: Google's Genkit framework (maintained for backward compatibility)
+  - Custom providers implementing the `AIProvider` interface
 - Input: `{ feedback: string, breadcrumbs: string }`
 - Output: `{ developerPrompt: string }` (structured via Zod schema)
 - System prompt configurable via `feedbackSystemPrompt` in config or FeedbackSettings global
+- Provider implementation details: `packages/core/src/providers/`
 
 **Job Processing** (`packages/payload-plugin/src/jobs/processFeedback.ts`)
 
 - Triggered by `afterChange` hook on feedback collection
-- Fetches FeedbackSettings global for AI config (model, apiKey, systemPrompt, temperature)
-- Calls `getFeedbackProcessor` flow and updates feedback document with `developerPrompt`
+- Fetches FeedbackSettings global for AI config (`feedbackSettings.ai` object containing provider, model, apiKey, systemPrompt, temperature)
+- Provider field determines which AI provider to use (defaults to `vercel` for Vercel AI SDK)
+- Calls `getFeedbackProcessor` with appropriate provider and updates feedback document with `developerPrompt`
 
 **Integration Endpoints**
 
@@ -112,9 +120,60 @@ pnpm --filter @feedback-forge/payload-plugin generate:importmap # Generate impor
 Plugin configuration happens at two levels:
 
 1. **Plugin Options** (in `payload.config.ts`): Static config like `access`, `allowAnonymousSubmissions`, `cron`, `disabled`
-2. **FeedbackSettings Global** (Payload admin UI): Runtime config for AI settings (Genkit model, API key, system prompt), GitHub integration (repo, owner, token), Jules integration (API key, repo, branch)
+2. **FeedbackSettings Global** (Payload admin UI): Runtime config for AI settings (`ai` object with provider, model, apiKey, systemPrompt, temperature), GitHub integration (repo, owner, token), Jules integration (API key, repo, branch)
 
 The job and endpoints dynamically fetch settings from the global at runtime, allowing configuration changes without code deployment.
+
+**AI Configuration Structure:**
+
+```typescript
+feedbackSettings.ai = {
+  provider: 'vercel' | 'genkit', // defaults to 'vercel'
+  model: 'openai:gpt-4o', // provider-specific model string
+  apiKey: 'sk-...', // provider-specific API key
+  systemPrompt: '...', // optional custom system prompt
+  temperature: 0.8, // optional temperature (0-1)
+};
+```
+
+### Provider System
+
+Feedback Forge uses a pluggable provider architecture for AI processing, allowing seamless switching between different AI services.
+
+**Provider Abstraction:**
+
+- All providers implement the `AIProvider` interface (`packages/core/src/providers/types.ts`)
+- Interface defines a single method: `generateText(options: GenerateTextOptions): Promise<string>`
+- Provider-agnostic implementation in `packages/core/src/feedbackProcessor.ts`
+
+**Available Providers:**
+
+1. **VercelAIProvider** (`packages/core/src/providers/vercel.ts`)
+   - Default provider for the system
+   - Built on Vercel AI SDK
+   - Supports multiple model providers: OpenAI, Anthropic, Google, etc.
+   - Model format: `provider:model` (e.g., `openai:gpt-4o`, `anthropic:claude-3-5-sonnet-20241022`)
+   - Default model: `openai:gpt-4o`
+
+2. **GenkitProvider** (`packages/core/src/providers/genkit.ts`)
+   - Google's Genkit framework
+   - Maintained for backward compatibility with existing configurations
+   - Supports Google AI models (Gemini)
+   - Model format: `gemini-2.5-flash`, `gemini-2.0-flash-exp`, etc.
+
+**Provider Factory Pattern:**
+
+- `createProvider(config)` function in `packages/core/src/providers/factory.ts`
+- Automatically instantiates correct provider based on config.provider field
+- Falls back to VercelAIProvider if provider not specified
+- Extensible: custom providers can be added by implementing `AIProvider` interface
+
+**File Locations:**
+
+- `packages/core/src/providers/types.ts` - Provider interface definition
+- `packages/core/src/providers/factory.ts` - Provider factory and creation logic
+- `packages/core/src/providers/vercel.ts` - Vercel AI SDK provider
+- `packages/core/src/providers/genkit.ts` - Genkit provider
 
 ### Status Management
 
