@@ -1,5 +1,13 @@
 # @feedback-forge/integration-jules
 
+## 0.3.0-beta.1
+
+### Patch Changes
+
+- Angular Enhancements, Express direct, documentation updates
+- Updated dependencies
+  - @feedback-forge/core@0.3.0-beta.1
+
 ## 0.3.0-beta.0
 
 ### Minor Changes

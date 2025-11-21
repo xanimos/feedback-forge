@@ -1,17 +1,17 @@
 {
-  "name": "@feedback-forge/nestjs-plugin",
+  "name": "@feedback-forge/express-plugin",
   "version": "0.3.0-beta.1",
-  "description": "NestJS plugin for Feedback Forge - process feedback, create GitHub issues, and start Jules sessions",
+  "description": "Express plugin for Feedback Forge - process feedback, create GitHub issues, and start Jules sessions",
   "author": "Feedback Forge",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/xanimos/feedback-forge.git",
-    "directory": "packages/nestjs-plugin"
+    "directory": "packages/express-plugin"
   },
   "keywords": [
     "feedback-forge",
-    "nestjs",
+    "express",
     "api",
     "feedback",
     "plugin"
@@ -30,19 +30,12 @@
     "@feedback-forge/plugin-common": "workspace:*"
   },
   "peerDependencies": {
-    "@nestjs/common": "^10.0.0 || ^11.0.0",
-    "@nestjs/core": "^10.0.0 || ^11.0.0",
-    "class-validator": "^0.14.0",
-    "class-transformer": "^0.5.0",
-    "reflect-metadata": "^0.1.13 || ^0.2.0",
-    "rxjs": "^7.0.0"
+    "express": "^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/core": "^11.0.0",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.0.0",
-    "class-validator": "^0.14.0",
-    "class-transformer": "^0.5.0",
+    "express": "^4.21.2",
     "rimraf": "^6.1.0",
     "typescript": "~5.7.3"
   }

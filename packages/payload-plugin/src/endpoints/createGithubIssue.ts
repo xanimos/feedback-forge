@@ -54,6 +54,7 @@ export const createGithubIssueEndpoint: Endpoint = {
         repo: feedbackSettings.github.repo,
         owner: feedbackSettings.github.owner,
         token: feedbackSettings.github.token,
+        baseUrl: feedbackSettings.github.baseUrl,
       });
 
       await req.payload.update({

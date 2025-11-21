@@ -1,0 +1,38 @@
+{
+  "name": "@feedback-forge/plugin-common",
+  "version": "0.3.0-beta.1",
+  "description": "Shared business logic for Feedback Forge framework plugins",
+  "author": "Feedback Forge",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xanimos/feedback-forge.git",
+    "directory": "packages/plugin-common"
+  },
+  "keywords": [
+    "feedback-forge",
+    "plugin",
+    "shared",
+    "common"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@feedback-forge/core": "workspace:*",
+    "@feedback-forge/integration-github": "workspace:*",
+    "@feedback-forge/integration-jules": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "rimraf": "^6.1.0",
+    "typescript": "~5.7.3"
+  }
+}

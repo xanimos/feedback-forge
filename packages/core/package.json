@@ -1,6 +1,6 @@
 {
   "name": "@feedback-forge/core",
-  "version": "0.3.0-beta.0",
+  "version": "0.3.0-beta.1",
   "description": "Core types, utilities, and AI feedback processing logic for the Feedback Forge ecosystem.",
   "author": "Feedback Forge",
   "repository": {
@@ -36,9 +36,9 @@
     "platform-agnostic"
   ],
   "dependencies": {
-    "@ai-sdk/anthropic": "^1.0.0",
-    "@ai-sdk/google": "^1.0.0",
-    "@ai-sdk/openai": "^1.0.0",
+    "@ai-sdk/anthropic": "^2.0.0",
+    "@ai-sdk/google": "^2.0.0",
+    "@ai-sdk/openai": "^2.0.0",
     "@genkit-ai/google-genai": "^1.21.0",
     "ai": "^5.0.0",
     "genkit": "^1.21.0",

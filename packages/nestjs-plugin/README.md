@@ -4,7 +4,7 @@ NestJS plugin for Feedback Forge - process feedback with AI, create GitHub issue
 
 ## Features
 
-- Process user feedback using Google's Genkit AI
+- **Multi-Provider AI Support**: Process feedback using Vercel AI SDK (OpenAI, Anthropic, Google), Genkit, or custom providers
 - Transform feedback into actionable developer prompts
 - Create GitHub issues automatically or on-demand
 - Start Jules AI coding sessions with context
@@ -25,7 +25,7 @@ yarn add @feedback-forge/nestjs-plugin
 
 ## Quick Start
 
-### 1. Static Configuration
+### 1. Static Configuration with Vercel AI SDK (Recommended)
 
 ```typescript
 // app.module.ts
@@ -36,8 +36,9 @@ import { FeedbackForgeModule } from '@feedback-forge/nestjs-plugin';
   imports: [
     FeedbackForgeModule.forRoot({
       ai: {
-        model: 'gemini-2.5-flash',
-        apiKey: process.env.GOOGLE_AI_API_KEY,
+        provider: 'vercel', // Use Vercel AI SDK for multi-provider support
+        model: 'openai:gpt-4o', // Format: "provider:model"
+        apiKey: process.env.OPENAI_API_KEY, // or ANTHROPIC_API_KEY, GOOGLE_AI_API_KEY
         temperature: 0.8,
       },
       github: {
@@ -57,7 +58,27 @@ import { FeedbackForgeModule } from '@feedback-forge/nestjs-plugin';
 export class AppModule {}
 ```
 
-### 2. Async Configuration (Recommended)
+**Alternative: Static Configuration with Genkit (Legacy)**
+
+```typescript
+// app.module.ts
+@Module({
+  imports: [
+    FeedbackForgeModule.forRoot({
+      ai: {
+        provider: 'genkit', // Use Google Genkit
+        model: 'gemini-2.5-flash',
+        apiKey: process.env.GOOGLE_AI_API_KEY,
+        temperature: 0.8,
+      },
+      // ... other config
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### 2. Async Configuration (Best Practice)
 
 ```typescript
 // app.module.ts
@@ -71,9 +92,11 @@ import { FeedbackForgeModule } from '@feedback-forge/nestjs-plugin';
     FeedbackForgeModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         ai: {
-          model: configService.get('GENKIT_MODEL', 'gemini-2.5-flash'),
-          apiKey: configService.get('GOOGLE_AI_API_KEY'),
-          temperature: 0.8,
+          provider: configService.get('AI_PROVIDER', 'vercel'), // 'vercel', 'genkit', or 'custom'
+          model: configService.get('AI_MODEL', 'openai:gpt-4o'),
+          apiKey: configService.get('AI_API_KEY'), // Provider-specific API key
+          temperature: parseFloat(configService.get('AI_TEMPERATURE', '0.8')),
+          systemPrompt: configService.get('AI_SYSTEM_PROMPT'),
         },
         github: {
           owner: configService.get('GITHUB_OWNER'),
@@ -86,9 +109,46 @@ import { FeedbackForgeModule } from '@feedback-forge/nestjs-plugin';
           githubStartingBranch: configService.get('JULES_GITHUB_BRANCH', 'main'),
         },
         autoCreateGithubIssue: configService.get('AUTO_CREATE_GITHUB_ISSUE') === 'true',
-        feedbackSystemPrompt: configService.get('FEEDBACK_SYSTEM_PROMPT'),
       }),
       inject: [ConfigService],
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### 3. Custom Provider Configuration
+
+Implement your own AI provider:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { FeedbackForgeModule } from '@feedback-forge/nestjs-plugin';
+import type { AIProvider, GenerateInput, GenerateOutput } from '@feedback-forge/core';
+
+class MyCustomAIProvider implements AIProvider {
+  async generate(input: GenerateInput): Promise<GenerateOutput> {
+    // Your custom AI logic
+    const response = await yourAIService.generateText(input.prompt);
+    return {
+      text: response.text,
+      usage: {
+        inputTokens: response.inputTokens,
+        outputTokens: response.outputTokens,
+        totalTokens: response.totalTokens,
+      },
+    };
+  }
+}
+
+@Module({
+  imports: [
+    FeedbackForgeModule.forRoot({
+      ai: {
+        provider: 'custom',
+        customProvider: new MyCustomAIProvider(),
+      },
+      // ... other config
     }),
   ],
 })
@@ -225,27 +285,50 @@ curl -X POST http://localhost:3000/feedback/jules-session \
 
 ### NestJSFeedbackForgeConfig
 
-| Property                     | Type      | Required | Description                                                            |
-| ---------------------------- | --------- | -------- | ---------------------------------------------------------------------- |
-| `ai`                         | `object`  | Yes      | Genkit AI configuration                                                |
-| `ai.model`                   | `string`  | Yes      | Genkit model name (e.g., 'gemini-2.5-flash')                           |
-| `ai.apiKey`                  | `string`  | Yes      | Google AI API key                                                      |
-| `ai.systemPrompt`            | `string`  | No       | Custom system prompt for AI                                            |
-| `ai.temperature`             | `number`  | No       | AI temperature (0-1)                                                   |
-| `github`                     | `object`  | No       | GitHub integration configuration                                       |
-| `github.owner`               | `string`  | Yes\*    | GitHub repository owner                                                |
-| `github.repo`                | `string`  | Yes\*    | GitHub repository name                                                 |
-| `github.token`               | `string`  | Yes\*    | GitHub personal access token                                           |
-| `jules`                      | `object`  | No       | Jules integration configuration                                        |
-| `jules.apiKey`               | `string`  | Yes\*    | Jules API key                                                          |
-| `jules.apiUrl`               | `string`  | No       | Jules API URL (default: https://jules.googleapis.com/v1alpha/sessions) |
-| `jules.githubRepo`           | `string`  | Yes\*    | GitHub repo for Jules (format: owner/repo)                             |
-| `jules.githubStartingBranch` | `string`  | No       | Starting branch for Jules (default: 'main')                            |
-| `routePrefix`                | `string`  | No       | API route prefix (default: 'feedback')                                 |
-| `autoCreateGithubIssue`      | `boolean` | No       | Auto-create GitHub issues (default: false)                             |
-| `feedbackSystemPrompt`       | `string`  | No       | Custom system prompt for feedback processing                           |
+| Property                     | Type                               | Required | Description                                                                                                                                         |
+| ---------------------------- | ---------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ai`                         | `object`                           | Yes      | AI configuration                                                                                                                                    |
+| `ai.provider`                | `'vercel' \| 'genkit' \| 'custom'` | No       | AI provider (default: 'genkit' for backward compatibility)                                                                                          |
+| `ai.model`                   | `string`                           | Yes      | Model identifier. Format depends on provider: Vercel: `"provider:model"` (e.g., `"openai:gpt-4o"`), Genkit: model name (e.g., `"gemini-2.5-flash"`) |
+| `ai.apiKey`                  | `string`                           | Yes\*\*  | Provider-specific API key (not required for custom provider)                                                                                        |
+| `ai.systemPrompt`            | `string`                           | No       | Custom system prompt for AI                                                                                                                         |
+| `ai.temperature`             | `number`                           | No       | AI temperature (0-1, default: 0.7)                                                                                                                  |
+| `ai.customProvider`          | `AIProvider`                       | No       | Custom AI provider implementation (required when provider is 'custom')                                                                              |
+| `github`                     | `object`                           | No       | GitHub integration configuration                                                                                                                    |
+| `github.owner`               | `string`                           | Yes\*    | GitHub repository owner                                                                                                                             |
+| `github.repo`                | `string`                           | Yes\*    | GitHub repository name                                                                                                                              |
+| `github.token`               | `string`                           | Yes\*    | GitHub personal access token                                                                                                                        |
+| `jules`                      | `object`                           | No       | Jules integration configuration                                                                                                                     |
+| `jules.apiKey`               | `string`                           | Yes\*    | Jules API key                                                                                                                                       |
+| `jules.apiUrl`               | `string`                           | No       | Jules API URL (default: https://jules.googleapis.com/v1alpha/sessions)                                                                              |
+| `jules.githubRepo`           | `string`                           | Yes\*    | GitHub repo for Jules (format: owner/repo)                                                                                                          |
+| `jules.githubStartingBranch` | `string`                           | No       | Starting branch for Jules (default: 'main')                                                                                                         |
+| `routePrefix`                | `string`                           | No       | API route prefix (default: 'feedback')                                                                                                              |
+| `autoCreateGithubIssue`      | `boolean`                          | No       | Auto-create GitHub issues after AI processing (default: false)                                                                                      |
+| `feedbackSystemPrompt`       | `string`                           | No       | Alias for ai.systemPrompt (deprecated, use ai.systemPrompt instead)                                                                                 |
 
 \* Required if the parent object is provided
+\*\* Not required when using `provider: 'custom'`
+
+### AI Provider Options
+
+**Vercel AI SDK** (`provider: 'vercel'`):
+
+- Supports OpenAI, Anthropic, and Google models
+- Model format: `"provider:model"` (e.g., `"openai:gpt-4o"`, `"anthropic:claude-3-5-sonnet-20241022"`, `"google:gemini-2.0-flash"`)
+- API key depends on model provider (OpenAI, Anthropic, or Google)
+
+**Genkit** (`provider: 'genkit'`):
+
+- Google's Genkit framework (legacy support)
+- Model format: model name only (e.g., `"gemini-2.5-flash"`)
+- Requires Google AI API key
+
+**Custom** (`provider: 'custom'`):
+
+- Implement your own `AIProvider` interface from `@feedback-forge/core`
+- Provide implementation via `ai.customProvider`
+- No API key required (handled by your implementation)
 
 ## Using the FeedbackService
 
@@ -292,12 +375,17 @@ export class MyService {
 
 Create a `.env` file in your NestJS project:
 
-```env
-# Required - Google AI API Key for Genkit
-GOOGLE_AI_API_KEY=your-google-ai-api-key
+### Vercel AI SDK Configuration (Recommended)
 
-# Optional - Genkit model (default: gemini-2.5-flash)
-GENKIT_MODEL=gemini-2.5-flash
+```env
+# AI Provider Configuration
+AI_PROVIDER=vercel
+AI_MODEL=openai:gpt-4o
+AI_API_KEY=your-openai-api-key
+AI_TEMPERATURE=0.8
+
+# Optional - Custom system prompt
+AI_SYSTEM_PROMPT="You are an expert developer..."
 
 # Optional - GitHub Integration
 GITHUB_OWNER=your-org
@@ -311,10 +399,45 @@ JULES_GITHUB_BRANCH=main
 
 # Optional - Auto-create GitHub issues
 AUTO_CREATE_GITHUB_ISSUE=false
+```
+
+### Alternative: Genkit Configuration (Legacy)
+
+```env
+# AI Provider Configuration
+AI_PROVIDER=genkit
+AI_MODEL=gemini-2.5-flash
+AI_API_KEY=your-google-ai-api-key
+AI_TEMPERATURE=0.8
 
 # Optional - Custom system prompt
-FEEDBACK_SYSTEM_PROMPT="You are an expert developer..."
+AI_SYSTEM_PROMPT="You are an expert developer..."
+
+# Optional - GitHub Integration
+GITHUB_OWNER=your-org
+GITHUB_REPO=your-repo
+GITHUB_TOKEN=your-github-token
+
+# Optional - Jules Integration
+JULES_API_KEY=your-jules-api-key
+JULES_GITHUB_REPO=your-org/your-repo
+JULES_GITHUB_BRANCH=main
+
+# Optional - Auto-create GitHub issues
+AUTO_CREATE_GITHUB_ISSUE=false
 ```
+
+### Supported AI Models
+
+**Vercel AI SDK** (`AI_PROVIDER=vercel`):
+
+- OpenAI: `openai:gpt-4o`, `openai:gpt-4-turbo`, `openai:gpt-3.5-turbo`
+- Anthropic: `anthropic:claude-3-5-sonnet-20241022`, `anthropic:claude-3-opus-20240229`
+- Google: `google:gemini-2.0-flash-exp`, `google:gemini-1.5-pro`
+
+**Genkit** (`AI_PROVIDER=genkit`):
+
+- `gemini-2.5-flash`, `gemini-2.0-flash-exp`, `gemini-1.5-pro`
 
 ## Custom System Prompt
 
@@ -488,9 +611,14 @@ export class AppModule {}
 
 **Solution**: Ensure `jules` config is provided in `forRoot()` or `forRootAsync()`
 
-### Issue: "GOOGLE_AI_API_KEY is undefined"
+### Issue: "AI_API_KEY is undefined" or "GOOGLE_AI_API_KEY is undefined"
 
-**Solution**: Set the environment variable or pass it directly in the config
+**Solution**: Set the `AI_API_KEY` environment variable or pass `ai.apiKey` directly in the config. The specific API key name depends on your provider:
+
+- Vercel with OpenAI: Set `OPENAI_API_KEY` or `AI_API_KEY`
+- Vercel with Anthropic: Set `ANTHROPIC_API_KEY` or `AI_API_KEY`
+- Vercel with Google: Set `GOOGLE_AI_API_KEY` or `AI_API_KEY`
+- Genkit: Set `GOOGLE_AI_API_KEY` or `AI_API_KEY`
 
 ### Issue: Module not found errors
 

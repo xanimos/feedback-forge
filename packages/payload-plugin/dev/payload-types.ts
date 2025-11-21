@@ -85,9 +85,7 @@ export interface Config {
     feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
-    'payload-locked-documents':
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
@@ -525,6 +523,10 @@ export interface FeedbackSetting {
     owner?: string | null;
     repo?: string | null;
     token?: string | null;
+    /**
+     * Custom base URL for GitHub Enterprise Server. Leave empty for github.com
+     */
+    baseUrl?: string | null;
   };
   jules?: {
     enabled?: boolean | null;
@@ -537,18 +539,12 @@ export interface FeedbackSetting {
       received?: string | null;
     };
   };
-  genkit: {
-    model:
-      | 'gemini-2.5-pro'
-      | 'gemini-2.5-pro-preview-tts'
-      | 'gemini-2.5-flash'
-      | 'gemini-2.5-flash-preview-09-2025'
-      | 'gemini-live-2.5-flash-preview'
-      | 'gemini-2.5-flash-preview-tts'
-      | 'gemini-2.5-flash-lite'
-      | 'gemini-2.5-flash-lite-preview-09-2025'
-      | 'gemini-2.0-flash'
-      | 'gemini-2.0-flash-lite';
+  ai: {
+    provider: 'vercel' | 'genkit';
+    /**
+     * Model format depends on provider. Vercel: "provider:model" (e.g., "openai:gpt-4o", "anthropic:claude-3-5-sonnet-20241022", "google:gemini-2.0-flash"). Genkit: model name only (e.g., "gemini-2.5-flash").
+     */
+    model: string;
     apiKey: string;
     systemPrompt?: string | null;
     temperature?: number | null;
@@ -568,6 +564,7 @@ export interface FeedbackSettingsSelect<T extends boolean = true> {
         owner?: T;
         repo?: T;
         token?: T;
+        baseUrl?: T;
       };
   jules?:
     | T
@@ -584,9 +581,10 @@ export interface FeedbackSettingsSelect<T extends boolean = true> {
               received?: T;
             };
       };
-  genkit?:
+  ai?:
     | T
     | {
+        provider?: T;
         model?: T;
         apiKey?: T;
         systemPrompt?: T;
@@ -615,6 +613,7 @@ export interface TaskFeedbackForgeProcessFeedback {
 export interface Auth {
   [k: string]: unknown;
 }
+
 
 declare module 'payload' {
   export interface GeneratedTypes extends Config {}

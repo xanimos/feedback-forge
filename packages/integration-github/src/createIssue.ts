@@ -6,10 +6,21 @@ interface CreateIssueParams {
   repo: string;
   owner: string;
   token: string;
+  baseUrl?: string;
 }
 
-export const createIssue = async ({ title, body, repo, owner, token }: CreateIssueParams) => {
-  const octokit = new Octokit({ auth: token });
+export const createIssue = async ({
+  title,
+  body,
+  repo,
+  owner,
+  token,
+  baseUrl,
+}: CreateIssueParams) => {
+  const octokit = new Octokit({
+    auth: token,
+    ...(baseUrl && { baseUrl }),
+  });
 
   const response = await octokit.rest.issues.create({
     owner,

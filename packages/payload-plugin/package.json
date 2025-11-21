@@ -1,6 +1,6 @@
 {
   "name": "@feedback-forge/payload-plugin",
-  "version": "0.3.0-beta.0",
+  "version": "0.3.0-beta.1",
   "description": "The primary plugin for integrating the Feedback Forge toolkit into a Payload CMS application.",
   "author": "Feedback Forge",
   "repository": {

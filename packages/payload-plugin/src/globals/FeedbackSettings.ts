@@ -53,6 +53,16 @@ export const FeedbackSettings: GlobalConfig = {
             condition: (_, siblingData) => siblingData.enabled,
           },
         },
+        {
+          name: 'baseUrl',
+          type: 'text',
+          label: 'GitHub Base URL (Optional)',
+          admin: {
+            placeholder: 'https://github.enterprise.com/api/v3',
+            description: 'Custom base URL for GitHub Enterprise Server. Leave empty for github.com',
+            condition: (_, siblingData) => siblingData.enabled,
+          },
+        },
       ],
     },
     {

@@ -8,7 +8,12 @@
     "@feedback-forge/integration-jules": "0.3.0",
     "@feedback-forge/nestjs-plugin": "0.3.0",
     "@feedback-forge/payload-plugin": "0.3.0",
-    "@feedback-forge/react-widget": "0.3.0"
+    "@feedback-forge/react-widget": "0.3.0",
+    "@feedback-forge/express-plugin": "0.3.0-beta.0",
+    "@feedback-forge/plugin-common": "0.3.0-beta.0"
   },
-  "changesets": ["tame-pugs-fail"]
+  "changesets": [
+    "legal-ghosts-wash",
+    "tame-pugs-fail"
+  ]
 }

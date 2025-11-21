@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { catchError, throwError } from 'rxjs';
+import { catchError, throwError, Observable } from 'rxjs';
 
 export interface FeedbackSubmission {
   title: string;
@@ -20,6 +20,14 @@ export interface FeedbackWidgetStyles {
   closeButton?: Partial<CSSStyleDeclaration>;
 }
 
+/**
+ * Custom submission handler function type.
+ * Receives the feedback payload and should return an Observable that completes on success.
+ */
+export type FeedbackSubmissionHandler = (
+  payload: FeedbackSubmission,
+) => Observable<any>;
+
 @Component({
   selector: 'ff-feedback-widget',
   templateUrl: './feedback-widget.component.html',
@@ -28,7 +36,24 @@ export interface FeedbackWidgetStyles {
   imports: [CommonModule, FormsModule],
 })
 export class FeedbackWidgetComponent implements OnInit {
-  @Input() feedbackApiUrl!: string;
+  /**
+   * API URL for feedback submission. Required if submitHandler is not provided.
+   */
+  @Input() feedbackApiUrl?: string;
+
+  /**
+   * Custom submission handler. If provided, this will be used instead of the default HTTP POST.
+   * Should return an Observable that completes on success or errors on failure.
+   *
+   * Example:
+   * ```typescript
+   * customSubmitHandler = (payload: FeedbackSubmission) => {
+   *   return this.myCustomHttpService.submitFeedback(payload);
+   * }
+   * ```
+   */
+  @Input() submitHandler?: FeedbackSubmissionHandler;
+
   @Input() userId?: string | number;
   @Input() defaultTitle?: string = '';
   @Input() defaultFeedback?: string = '';
@@ -63,6 +88,12 @@ export class FeedbackWidgetComponent implements OnInit {
       return;
     }
 
+    // Validate that either submitHandler or feedbackApiUrl is provided
+    if (!this.submitHandler && !this.feedbackApiUrl) {
+      this.error = 'Configuration error: Either submitHandler or feedbackApiUrl must be provided';
+      return;
+    }
+
     this.isSubmitting = true;
     this.error = null;
     this.success = false;
@@ -74,8 +105,20 @@ export class FeedbackWidgetComponent implements OnInit {
       userId: this.userId,
     };
 
-    this.http
-      .post(this.feedbackApiUrl, payload)
+    // Use custom handler if provided, otherwise use default HTTP POST
+    let submission$: Observable<any>;
+
+    try {
+      submission$ = this.submitHandler
+        ? this.submitHandler(payload)
+        : this.http.post(this.feedbackApiUrl!, payload);
+    } catch (error) {
+      this.error = 'Failed to submit feedback: ' + (error instanceof Error ? error.message : 'Unknown error');
+      this.isSubmitting = false;
+      return;
+    }
+
+    submission$
       .pipe(
         catchError((error: HttpErrorResponse) => {
           this.error = error.error?.message || 'Failed to submit feedback';
@@ -84,7 +127,7 @@ export class FeedbackWidgetComponent implements OnInit {
         }),
       )
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.success = true;
           this.isSubmitting = false;
           this.resetForm();
@@ -93,7 +136,7 @@ export class FeedbackWidgetComponent implements OnInit {
             this.success = false;
           }, 2000);
         },
-        error: () => {
+        error: (err) => {
           this.isSubmitting = false;
         },
       });

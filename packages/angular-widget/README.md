@@ -91,14 +91,17 @@ export class AppComponent {
 
 ## Props
 
-| Prop                 | Type                   | Required | Default     | Description                                         |
-| -------------------- | ---------------------- | -------- | ----------- | --------------------------------------------------- |
-| `feedbackApiUrl`     | `string`               | Yes      | -           | The API endpoint to submit feedback to              |
-| `userId`             | `string \| number`     | No       | `undefined` | Optional user identifier to associate with feedback |
-| `defaultTitle`       | `string`               | No       | `''`        | Default value for the title field                   |
-| `defaultFeedback`    | `string`               | No       | `''`        | Default value for the feedback textarea             |
-| `defaultBreadcrumbs` | `string`               | No       | `''`        | Default value for the breadcrumbs field             |
-| `customStyles`       | `FeedbackWidgetStyles` | No       | `undefined` | Custom styles to override default appearance        |
+| Prop                 | Type                          | Required | Default     | Description                                                                          |
+| -------------------- | ----------------------------- | -------- | ----------- | ------------------------------------------------------------------------------------ |
+| `feedbackApiUrl`     | `string`                      | No\*     | -           | The API endpoint to submit feedback to (required if `submitHandler` not provided)    |
+| `submitHandler`      | `FeedbackSubmissionHandler`   | No\*     | -           | Custom submission handler function (required if `feedbackApiUrl` not provided)       |
+| `userId`             | `string \| number`            | No       | `undefined` | Optional user identifier to associate with feedback                                  |
+| `defaultTitle`       | `string`                      | No       | `''`        | Default value for the title field                                                    |
+| `defaultFeedback`    | `string`                      | No       | `''`        | Default value for the feedback textarea                                              |
+| `defaultBreadcrumbs` | `string`                      | No       | `''`        | Default value for the breadcrumbs field                                              |
+| `customStyles`       | `FeedbackWidgetStyles`        | No       | `undefined` | Custom styles to override default appearance                                         |
+
+\* Either `feedbackApiUrl` or `submitHandler` must be provided.
 
 ## Custom Styling
 
@@ -152,6 +155,121 @@ The `FeedbackWidgetStyles` interface accepts the following properties:
 - `widgetContainer`: Styles for the outer widget container
 
 Each property accepts a `Partial<CSSStyleDeclaration>`, giving you full control over CSS properties.
+
+## Custom Submission Handler
+
+For applications that need to use a custom HTTP client (e.g., a wrapper around HttpClient with authentication, interceptors, or specific headers), you can provide a custom submission handler using the `submitHandler` prop:
+
+### Basic Example with Custom HTTP Service
+
+```typescript
+import { Component, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import {
+  FeedbackWidgetComponent,
+  FeedbackSubmission,
+} from '@feedback-forge/angular-widget';
+
+// Your custom HTTP service
+@Injectable({ providedIn: 'root' })
+export class MyCustomHttpService {
+  constructor(private http: HttpClient) {}
+
+  submitFeedback(payload: FeedbackSubmission): Observable<any> {
+    // Add custom headers, authentication, etc.
+    return this.http.post('/api/feedback', payload, {
+      headers: {
+        'X-Custom-Header': 'value',
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+    });
+  }
+
+  private getToken(): string {
+    // Your token retrieval logic
+    return 'your-auth-token';
+  }
+}
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [FeedbackWidgetComponent],
+  template: `
+    <ff-feedback-widget
+      [submitHandler]="handleSubmit"
+      [userId]="currentUserId"
+    />
+  `,
+})
+export class AppComponent {
+  currentUserId = 'user-123';
+
+  constructor(private customHttp: MyCustomHttpService) {}
+
+  // Bind the custom submission handler
+  handleSubmit = (payload: FeedbackSubmission) => {
+    return this.customHttp.submitFeedback(payload);
+  };
+}
+```
+
+### Example with Request Wrapper
+
+If you have a request wrapper service that handles authentication, retries, and error handling:
+
+```typescript
+import { Component, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import {
+  FeedbackWidgetComponent,
+  FeedbackSubmission,
+} from '@feedback-forge/angular-widget';
+
+// Your request wrapper service
+@Injectable({ providedIn: 'root' })
+export class ApiRequestService {
+  post<T>(endpoint: string, data: any): Observable<T> {
+    // Your custom request logic with authentication, retries, etc.
+    // This is just an example structure
+    return new Observable((observer) => {
+      // Your implementation here
+      observer.next({} as T);
+      observer.complete();
+    });
+  }
+}
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [FeedbackWidgetComponent],
+  template: `
+    <ff-feedback-widget [submitHandler]="customSubmitHandler" />
+  `,
+})
+export class AppComponent {
+  constructor(private apiService: ApiRequestService) {}
+
+  customSubmitHandler = (payload: FeedbackSubmission) => {
+    return this.apiService.post('/feedback', payload);
+  };
+}
+```
+
+### Handler Type Definition
+
+```typescript
+export type FeedbackSubmissionHandler = (
+  payload: FeedbackSubmission,
+) => Observable<any>;
+```
+
+The handler must:
+- Accept a `FeedbackSubmission` object as the parameter
+- Return an `Observable` that completes on success
+- Throw/error on failure (the widget will catch errors and display them)
 
 ## API Contract
 

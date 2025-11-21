@@ -70,8 +70,9 @@ import { FeedbackForgeModule } from '@feedback-forge/nestjs-plugin';
   imports: [
     FeedbackForgeModule.forRoot({
       ai: {
-        model: 'gemini-2.5-flash',
-        apiKey: process.env.GOOGLE_AI_API_KEY,
+        provider: 'vercel', // Use Vercel AI SDK for multi-provider support
+        model: 'openai:gpt-4o', // Supports OpenAI, Anthropic, Google
+        apiKey: process.env.OPENAI_API_KEY,
       },
       github: {
         owner: 'your-org',
@@ -92,7 +93,7 @@ Feedback Forge uses a modular architecture with framework-agnostic core packages
 ```
 User → Widget (React/Angular) → API (Payload/NestJS)
                                     ↓
-                              Core AI Processing (Genkit)
+                     Core AI Processing (Vercel AI SDK / Genkit)
                                     ↓
                               ┌─────────────┐
                               ↓             ↓
