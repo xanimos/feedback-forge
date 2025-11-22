@@ -17,6 +17,13 @@
     "component"
   ],
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/fesm2022/feedback-forge-angular-widget.mjs",
+  "module": "./dist/fesm2022/feedback-forge-angular-widget.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "ng-packagr -p ng-package.json",
     "clean": "rimraf dist"
